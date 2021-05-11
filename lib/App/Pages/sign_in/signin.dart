@@ -1,8 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:timetracker/Costom_button.dart/MyButton.dart';
+import 'package:timetracker/App/Costom_button.dart/MyButton.dart';
 
 class SignInPage extends StatelessWidget {
   @override
+  const SignInPage({Key key, @required this.onSignIn}) : super(key: key);
+  final void Function(User) onSignIn;
+
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -122,7 +126,7 @@ class SignInPage extends StatelessWidget {
                     color: Colors.yellow[800],
                   ),
                   child: InkWell(
-                    onTap: () {},
+                    onTap: _signInAnonymously,
                     child: Center(
                       child: signInMethods(
                         text: 'Sign in As Guest',
@@ -151,5 +155,13 @@ class SignInPage extends StatelessWidget {
   void _signInWithEmail() {
     // ignore: todo
     //TODO: Auth with Email
+  }
+  Future<void> _signInAnonymously() async {
+    try {
+      final userCredential = await FirebaseAuth.instance.signInAnonymously();
+      onSignIn(userCredential.user);
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }
